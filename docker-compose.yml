@@ -1,0 +1,28 @@
+services:
+  bot:
+    build: .
+    container_name: telegram-bot
+    env_file:
+      - .env
+    # Если нужно "пробросить" порт для webhook,
+    # то указываем, например: "3000:3000".
+    # В нашем случае используется long polling, так что доступ к порту не требуется,
+    # но вот пример вам на будущее:
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+  mongo:
+    image: mongo:6
+    container_name: mongo-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+networks:
+  app-network:
